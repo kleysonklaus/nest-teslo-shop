@@ -2,6 +2,11 @@
 /dist
 /node_modules
 
+#tambien se debe ignorar el .env, por fines practicos y de ejemplos se mantiene
+# .env
+
+postgres/
+
 # Logs
 logs
 *.log
