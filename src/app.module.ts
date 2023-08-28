@@ -2,8 +2,16 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductsModule } from './products/products.module';
+// import { APP_FILTER } from '@nestjs/core';
+// import { HttpExceptionFilter } from './httpExceptionFilter';
 
 @Module({
+  // providers: [
+  //   {
+  //     provide: APP_FILTER,
+  //     useClass: HttpExceptionFilter,
+  //   },
+  // ],
   imports: [
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
