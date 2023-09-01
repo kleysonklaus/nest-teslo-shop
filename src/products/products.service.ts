@@ -46,8 +46,8 @@ export class ProductsService {
 
   async findAll() {
     return this.productRepository.find({
-      skip: 2,
-      take: 2,
+      // skip: 2,
+      // take: 2,
     });
   }
 
@@ -72,8 +72,13 @@ export class ProductsService {
     return `This action updates a #${id} product`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  async remove(id: string) {
+
+    const response = await this.productRepository.delete(id);
+    if (response.affected === 0) {
+      throw new NotFoundException(`producto con el id: ${id}, no existe`);
+    }
+    return;
   }
 
   private handleDBExceptions(error: any) {
