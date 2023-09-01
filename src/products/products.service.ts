@@ -54,10 +54,13 @@ export class ProductsService {
   async findOne(id: string) {
 
 
-    const product = await this.productRepository.findOne({
-      where: {
-        id: id,
-      }
+    // const product = await this.productRepository.findOne({
+    //   where: {
+    //     id: id,
+    //   }
+    // });
+    const product = await this.productRepository.findOneBy({
+      id: id,
     });
 
     if (!product) {
@@ -74,10 +77,13 @@ export class ProductsService {
 
   async remove(id: string) {
 
-    const response = await this.productRepository.delete(id);
-    if (response.affected === 0) {
-      throw new NotFoundException(`producto con el id: ${id}, no existe`);
-    }
+    // const response = await this.productRepository.delete(id);
+    // if (response.affected === 0) {
+    //   throw new NotFoundException(`producto con el id: ${id}, no existe`);
+    // }
+    const product = await this.findOne(id);
+
+    await this.productRepository.remove(product);
     return;
   }
 
