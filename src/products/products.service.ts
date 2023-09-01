@@ -44,8 +44,11 @@ export class ProductsService {
     }
   }
 
-  findAll() {
-    return `This action returns all products`;
+  async findAll() {
+    return this.productRepository.find({
+      skip: 2,
+      take: 2,
+    });
   }
 
   findOne(id: number) {
