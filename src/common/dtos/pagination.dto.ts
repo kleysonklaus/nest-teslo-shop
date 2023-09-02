@@ -11,7 +11,7 @@ export class PaginationDto {
 
 
     @IsOptional()
-    @IsPositive()
+    // @IsPositive() // da error al hacer el get
     @Min(0)
     @Type(() => Number)  /// enableImplicitConversion: true
     offset?: number;
