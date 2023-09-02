@@ -61,5 +61,16 @@ export class Product {
             .replaceAll("'", '')
     }
 
-    // @BeforeUpdate()
+    @BeforeUpdate()
+    checkSlugUpdate() {
+        /// esto no funciona porque el slug siempre existe, si no es obligatorio es requerido
+        // if (!this.slug) {
+        //     this.slug = this.title
+        // }
+
+        this.slug = this.slug
+            .toLowerCase()
+            .replaceAll(' ', '_')
+            .replaceAll("'", '')
+    }
 }
