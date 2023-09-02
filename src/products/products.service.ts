@@ -55,11 +55,23 @@ export class ProductsService {
 
   async findAll(paginationDto: PaginationDto) {
     const { limit = 10, offset = 0 } = paginationDto;
-    return this.productRepository.find({
+    // return this.productRepository.find({
+    //   skip: offset,
+    //   take: limit,
+    //   // TODO: relaciones
+    // });
+    const products = await this.productRepository.find({
       skip: offset,
       take: limit,
-      // TODO: relaciones
+      relations: {
+        images: true,
+      }
     });
+
+    return products.map(product => ({
+      ...product,
+      images: product.images.map(image => image.url),
+    }));
   }
 
   async findOne(term: string) {
@@ -68,11 +80,13 @@ export class ProductsService {
     if (isUUID(term)) {
       product = await this.productRepository.findOneBy({ id: term });
     } else {
-      const queryBuilder = this.productRepository.createQueryBuilder();
+      const queryBuilder = this.productRepository.createQueryBuilder('prod'); // prod es el alias
       product = await queryBuilder.where(`UPPER(title) =:title or slug =:slug`, {
         title: term.toUpperCase(),
         slug: term.toLowerCase(),
-      }).getOne();
+      })
+        .leftJoinAndSelect('prod.images', 'prodImages')
+        .getOne();
 
       // el title y slug, son los nombres de la columna en la tablael otro es el valor
     }
@@ -90,8 +104,17 @@ export class ProductsService {
       throw new NotFoundException(`producto con id: ${term}, no existe`);
     }
 
-    return product;
+    return product; // si se cambia esto afeacta el remove
 
+  }
+
+
+  async findOnePlain(term: string) {
+    const { images = [], ...product } = await this.findOne(term);
+    return {
+      ...product,
+      images: images.map(img => img.url),
+    };
   }
 
   async update(id: string, updateProductDto: UpdateProductDto) {
