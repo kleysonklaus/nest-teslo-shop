@@ -62,9 +62,9 @@ export class ProductsService {
       product = await this.productRepository.findOneBy({ id: term });
     } else {
       const queryBuilder = this.productRepository.createQueryBuilder();
-      product = await queryBuilder.where(`title =:title or slug =:slug`, {
-        title: term,
-        slug: term,
+      product = await queryBuilder.where(`UPPER(title) =:title or slug =:slug`, {
+        title: term.toUpperCase(),
+        slug: term.toLowerCase(),
       }).getOne();
 
       // el title y slug, son los nombres de la columna en la tablael otro es el valor
