@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductsModule } from './products/products.module';
 // import { APP_FILTER } from '@nestjs/core';
 // import { HttpExceptionFilter } from './httpExceptionFilter';
+import { CommonModule } from './common/common.module';
 
 @Module({
   // providers: [
@@ -25,6 +26,7 @@ import { ProductsModule } from './products/products.module';
       synchronize: true,
     }),
     ProductsModule,
+    CommonModule,
   ],
 })
 export class AppModule { }
