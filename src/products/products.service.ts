@@ -98,7 +98,12 @@ export class ProductsService {
       throw new NotFoundException(`product with ${id} not found`);
     }
 
-    await this.productRepository.save(product);
+    try {
+      await this.productRepository.save(product);
+
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
     return product;
 
   }
@@ -116,11 +121,10 @@ export class ProductsService {
   }
 
   private handleDBExceptions(error: any) {
+    // console.log(error);
     if (error.code === '23505') {
       throw new BadRequestException(error.detail);
     }
-
-    this.logger.error(error);
 
     this.logger.error(error);
     throw new InternalServerErrorException(`ayuda!`);
