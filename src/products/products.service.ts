@@ -113,6 +113,7 @@ export class ProductsService {
 
   async findOnePlain(term: string) {
     const { images = [], ...product } = await this.findOne(term);
+    console.log(images);
     return {
       ...product,
       images: images.map(img => img.url),
@@ -122,27 +123,51 @@ export class ProductsService {
   async update(id: string, updateProductDto: UpdateProductDto) {
     const { images, ...toUpdate } = updateProductDto;
 
-    /// create query runner
-    const queryRunner =
-
     /// busca por el id, y le añade los atributos, pero no lo guarda, solo lo prepara
     const product = await this.productRepository.preload({
       id: id,
-      ...toUpdate,
-      images: [],
+      ...toUpdate
     });
 
     if (!product) {
       throw new NotFoundException(`product with ${id} not found`);
     }
 
+
+    /// create query runner
+    const queryRunner = this.dataSoruce.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
     try {
-      await this.productRepository.save(product);
+
+      if (images) {
+        // -----------------------------------------------------------productId
+        await queryRunner.manager.delete(ProductImage, { product: { id: id } });
+
+        product.images = images.map(
+          (image) => this.productImageRepository.create({ url: image })
+        );
+      } else {
+        // prodcut.images ?? se debe cargas las imagenes
+      }
+
+      /// intenta guardar las iamgenes
+      await queryRunner.manager.save(product);
+      // await this.productRepository.save(product);
+
+      await queryRunner.commitTransaction();
+      await queryRunner.release();
+
+      // return product;
+      return this.findOnePlain(id);
 
     } catch (error) {
+      await queryRunner.rollbackTransaction();
+      await queryRunner.release();
       this.handleDBExceptions(error);
     }
-    return product;
+    // return product;
 
   }
 
