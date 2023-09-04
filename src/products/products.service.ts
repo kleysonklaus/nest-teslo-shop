@@ -192,6 +192,8 @@ export class ProductsService {
     throw new InternalServerErrorException(`ayuda!`);
   }
 
+  /// una forma de eliminar todos los productos
+  /// sera utilziado para la semilla
   async deleteAllProducts() {
     const query = this.productRepository.createQueryBuilder('product');
     try {
