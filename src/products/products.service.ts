@@ -113,7 +113,6 @@ export class ProductsService {
 
   async findOnePlain(term: string) {
     const { images = [], ...product } = await this.findOne(term);
-    console.log(images);
     return {
       ...product,
       images: images.map(img => img.url),
